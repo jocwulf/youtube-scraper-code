@@ -50,8 +50,7 @@ def parse_video(youtube, video_id, company=None, channel_id=None, playlist_id=No
     
     existing_video = videos.find_one({"_id": video_id})
 
-    pdb.set_trace()
-
+    
     if existing_video["channelId"] == None:
       videos.update_one({"_id" : video_id}, 
         {
