@@ -97,16 +97,25 @@ if __name__ == "__main__":
         logging.error(" Extracting channel id from " + str(channel_url) + " failed")
         continue
       
+      start = time.time()
+      print "finished get_channel_id_from_url " + str(time.time() - start)
       if validate_channel_id(get_random_api_access(), channel_id) == False:
         logging.error(" Extracted channel id " + channel_id +  " from " + channel_url + " is invalid.")
         continue
-       
+      
+      print "finished validate_channel_id " + str(time.time() - start)
+      start = time.time()
+      
       if args.validate_urls_only == False:
         if check_item_exists(channels, "_id", channel_id) == True:
           continue  
 	  
         print("Initated scarping of " + channel_id + " " + security_name)
-        parse_channel.delay(get_random_api_access(), channel_id, security_name)     
+        parse_channel.delay(get_random_api_access(), channel_id, security_name) 
+
+        print "finished parse_channel.delay " + str(time.time() - start)
+        start = time.time()
+          
       v += 1
     else:
       logging.warning("WARNING: No url specified for " + security_name)  
