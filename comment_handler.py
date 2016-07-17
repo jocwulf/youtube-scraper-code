@@ -1,4 +1,4 @@
-#!/usr/bin/python
+  #!/usr/bin/python
 import httplib2
 import json
 import os
@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
   # parse_channel(get_random_api_access(),"UC_H4BUtjBHdG6qEkrCYqYrQ", "Ascom Holding AG")
   
-  argparser.add_argument("--csv", help="Required: Path to CSV file with company names and channel urls", required=True)
+  argparser.add_argument("--csv", help="Required: Path to CSV file with company names and channel urls, also takes web urls, if starting with http://", required=True)
   argparser.add_argument('--validate_urls_only', action='store_true')
   args = argparser.parse_args()
   
@@ -68,40 +68,48 @@ if __name__ == "__main__":
   # load channel urls from inputed csv file
   i = 0
   v = 0
-  with open(args.csv, "r") as handle:
-    r = csv.reader(handle, delimiter=";")
-    r.next()
+
+  if args.csv.startswith("https://") or args.csv.startswith("http://"):
+    url = args.csv
+    url = url.replace("www.dropbox.com", "dl.dropboxusercontent.com") #convert dropbox sharing url to direct link if necessary
+    handle = requests.get(url).iter_lines()
+  else:
+    handle =  open(args.csv, "r")
+
+  r = csv.reader(handle, delimiter=";")
+  r.next()
+  
+  if args.validate_urls_only == True:
+    print "Validating provided channel urls.."
+  else:
+    print "Initating scraping.."
+  
+  for company in r: #open csv and skip header
+    i += 1
+
+    security_name = company[0]  
+    channel_url = company[1] 
     
-    if args.validate_urls_only == True:
-      print "Validating provided channel urls.."
-    else:
-      print "Initating scraping.."
-    
-    for company in r: #open csv and skip header
-      i += 1
-      security_name = company[0]  
-      channel_url = company[1] 
+    if channel_url: # check if a channel url has been specified or if no channel exists for this company
+      try:
+        channel_id =  get_channel_id_from_url(get_random_api_access(), channel_url)
+      except Exception, exc:
+        logging.error(" Extracting channel id from " + str(channel_url) + " failed")
+        continue
       
-      if channel_url: # check if a channel url has been specified or if no channel exists for this company
-        try:
-          channel_id =  get_channel_id_from_url(get_random_api_access(), channel_url)
-        except Exception, exc:
-          logging.error(" Extracting channel id from " + str(channel_url) + " failed")
-          continue
-        
-        if validate_channel_id(get_random_api_access(), channel_id) == False:
-          logging.error(" Extracted channel id " + channel_id +  " from " + channel_url + " is invalid.")
-          continue
-         
-        if args.validate_urls_only == False:
-          if check_item_exists(channels, "_id", channel_id) == True:
-            continue  
-		  
-          print("Initated scarping of " + channel_id + " " + security_name)
-          parse_channel.delay(get_random_api_access(), channel_id, security_name)     
-        v += 1
-      else:
-        logging.warning("WARNING: No url specified for " + security_name)  
+      if validate_channel_id(get_random_api_access(), channel_id) == False:
+        logging.error(" Extracted channel id " + channel_id +  " from " + channel_url + " is invalid.")
+        continue
+       
+      if args.validate_urls_only == False:
+        if check_item_exists(channels, "_id", channel_id) == True:
+          continue  
+	  
+        print("Initated scarping of " + channel_id + " " + security_name)
+        parse_channel.delay(get_random_api_access(), channel_id, security_name)     
+      v += 1
+    else:
+      logging.warning("WARNING: No url specified for " + security_name)  
   
   if args.validate_urls_only == False:
     print "Result: Succesfully initated scraping of " + str(v) + " / " + str(i) + " channels"
