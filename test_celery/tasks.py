@@ -85,7 +85,7 @@ def parse_channel(youtube, channel_id, company):
             raise e
           else:
             clean_video_data(video_id)
-            print "Retrying parsing of video {}, attempt {}/{}".format(video_id, attempt + , max_retries_parse_video)
+            print "Retrying parsing of video {}, attempt {}/{}".format(video_id, attempt + 1, max_retries_parse_video)
             logging.exception(e)
         else:
           break
