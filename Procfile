@@ -1,1 +1,1 @@
-worker: celery -A test_celery worker --loglevel=warning --concurrency=10
+worker: celery -A test_celery worker --loglevel=warning --concurrency=5
