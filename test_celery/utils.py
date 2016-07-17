@@ -72,7 +72,7 @@ def parse_video(youtube, video_id, company=None, channel_id=None, playlist_id=No
 
   "if get_video_details returns false, it means youtube API did not find video with specified ID, thus video is private/deleted"
   if video["details"] == False:
-    logging.warning("No video was returned for id {} by API".format(video_id))
+    logging.warning("No video was returned by API for video_id: " + str(video_id) + " channel: " + str(channel_id) + " company: " + str(company) + " playlist: " + str(playlist_id))
     return
 
   #if video["details"]["status"]["publicStatsViewable"]: # youtube api field is not reliable
@@ -289,6 +289,7 @@ def clean_captions_xml_and_extract_plain_text(xml):
 TODO: DOC
 """
 def get_asr_language(youtube, video_id):
+  results = []
   """ fetch list of captions from API """ 
   try:
     results = youtube.captions().list(
