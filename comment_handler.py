@@ -15,11 +15,12 @@ import pdb
 from random import randint
 
 DEVELOPER_KEYS = [
-"AIzaSyChV4ClaMn3SLRb2Ks6S0lLKcD9zKLveBA",
-"AIzaSyDflZM0oBLQ4Zy22UITXmxS-YQEN6gTSWc",
- "AIzaSyBJv2rSblBo1qTf_qpVB4KzZRhBzY14PlQ",
- "AIzaSyCFp5JjMeB6INbTopPbTRwJXCeBnhvPtI4",
- "AIzaSyB3bFpEKCg9oYdubxejY783JsJOvpd8E8Q"
+# "AIzaSyChV4ClaMn3SLRb2Ks6S0lLKcD9zKLveBA",
+# "AIzaSyDflZM0oBLQ4Zy22UITXmxS-YQEN6gTSWc",
+#  "AIzaSyBJv2rSblBo1qTf_qpVB4KzZRhBzY14PlQ",
+#  "AIzaSyCFp5JjMeB6INbTopPbTRwJXCeBnhvPtI4",
+ # "AIzaSyB3bFpEKCg9oYdubxejY783JsJOvpd8E8Q",
+ "AIzaSyDzIM-HL6bHYKJc9IQ9WKg1D07eAY9I5tg"
 ]
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
@@ -36,7 +37,9 @@ if __name__ == "__main__":
 
   # pdb.set_trace()
 
-  # parse_channel(get_random_api_access(),"UC_H4BUtjBHdG6qEkrCYqYrQ", "Ascom Holding AG")
+  # parse_video(get_random_api_access(), "6MdkPES4KYM", "test_comp", "test_channel")
+
+  # parse_channel(get_random_api_access(),"UCWMWLPrg_mnD9czEj1jne8Q", "ABB")
   
   argparser.add_argument("--csv", help="Required: Path to CSV file with company names and channel urls, also takes web urls, if starting with http://", required=True)
   argparser.add_argument('--validate_urls_only', action='store_true')
@@ -97,25 +100,16 @@ if __name__ == "__main__":
         logging.error(" Extracting channel id from " + str(channel_url) + " failed")
         continue
       
-      start = time.time()
-      print "finished get_channel_id_from_url " + str(time.time() - start)
       if validate_channel_id(get_random_api_access(), channel_id) == False:
         logging.error(" Extracted channel id " + channel_id +  " from " + channel_url + " is invalid.")
         continue
-      
-      print "finished validate_channel_id " + str(time.time() - start)
-      start = time.time()
-      
+       
       if args.validate_urls_only == False:
         if check_item_exists(channels, "_id", channel_id) == True:
           continue  
 	  
         print("Initated scarping of " + channel_id + " " + security_name)
-        parse_channel.delay(get_random_api_access(), channel_id, security_name) 
-
-        print "finished parse_channel.delay " + str(time.time() - start)
-        start = time.time()
-          
+        parse_channel.delay(get_random_api_access(), channel_id, security_name)     
       v += 1
     else:
       logging.warning("WARNING: No url specified for " + security_name)  

@@ -72,6 +72,8 @@ def parse_channel(youtube, channel_id, company):
     
     parse_comments_for_channel(youtube, channel_id, company)
     parse_subscriptions_by_channel(youtube, channel_id, company)
+    parse_activities_by_channel(youtube, channel_id, company)
+
 
     # parse videos of channel
     channel["video_ids"] = get_video_ids_by_playlist(youtube, channel["details"]["contentDetails"]["relatedPlaylists"]["uploads"])   

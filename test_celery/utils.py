@@ -44,6 +44,22 @@ captions = db.captions
 def parse_video(youtube, video_id, company=None, channel_id=None, playlist_id=None):
   #skip parsing if video already in database
   if check_item_exists(videos, "_id", video_id):
+
+    """ check if video was previously saved in database as only belonging to a playlist but not a channel, since when parsing that playlist, the channel to which the video belongs was not yet parsed yet
+    if yes, update the video record to reflect that it belongs to a channel"""
+    
+    existing_video = videos.find_one({"_id": video_id})
+
+    pdb.set_trace()
+
+    if existing_video["channelId"] == None:
+      videos.update_one({"_id" : video_id}, 
+        {
+        "$set": {  "channelId": channel_id,
+                   "company": company,
+                   "playlist_id": None
+                  }}
+        )  
     return
 
   parse_comments_for_video(youtube, video_id, company, channel_id, playlist_id)
@@ -54,6 +70,11 @@ def parse_video(youtube, video_id, company=None, channel_id=None, playlist_id=No
   video["channelId"] = channel_id
   video["playlistId"] = playlist_id
   video["details"] = get_video_details(youtube, video_id)
+
+  "if get_video_details returns false, it means youtube API did not find video with specified ID, thus video is private/deleted"
+  if video["details"] == False:
+    logging.warning("No video was returned for id {} by API", str(video_id))
+    return
 
   #if video["details"]["status"]["publicStatsViewable"]: # youtube api field is not reliable
   parse_advanced_statistics(video_id, company, channel_id, playlist_id)
@@ -270,12 +291,17 @@ TODO: DOC
 """
 def get_asr_language(youtube, video_id):
   """ fetch list of captions from API """ 
-  results = youtube.captions().list(
-    part="snippet",
-    videoId=video_id
-    
-  ).execute()
-
+  try:
+    results = youtube.captions().list(
+      part="snippet",
+      videoId=video_id
+      
+    ).execute()
+  except HttpError, e:  
+      if str(e.resp.status) == "404": #ignore errors if video is unlisted or blocked
+        pass
+      else:
+        raise e
 
   """ find auto generated caption and return language if found otherwise return false """
   for caption in results["items"]:
@@ -360,8 +386,10 @@ def get_video_details(youtube, video_id):
   ).execute()
   
  
-  #print("video details " + video_id)
-  
+  "if API does not return any items for specified id, video is private/deleted"
+  if len(results["items"]) == 0:
+      return False
+
   return results["items"][0]
 
 def get_channel_details(youtube, channel_id):
@@ -404,8 +432,36 @@ def parse_subscriptions_by_channel(youtube, channel_id, company):
     
     
     db.subscriptions.save(subscription)   
+ 
+def parse_activities_by_channel(youtube, channel_id, company):
+  activities = youtube.activities()
+  request = activities.list(
+    part="snippet, contentDetails",
+    channelId=channel_id,
+    maxResults=50,
+  )
 
-  #print("get subscriptions for " + channel_id)
+  items = []
+  try:
+    while request is not None:
+      results = request.execute()
+      items = items + results["items"]
+      request = activities.list_next(request, results)
+  except HttpError, e:  
+    if str(e.resp.status) == "403" or str(e.resp.status) == "403": #ignore errors if not enough rights or channel not found
+      pass
+    else:
+      raise e
+    
+  for activity in items:
+    activity["channelId"] = channel_id
+    activity["company"] = company
+    activity["fetched_at"] = datetime.utcnow()  
+    activity["_id"] = activity["id"]
+    activity.pop("id", None)
+    
+    
+    db.activities.save(activity)   
   
   
 def get_video_ids_by_playlist(youtube, playlist_id):
