@@ -73,7 +73,7 @@ def parse_video(youtube, video_id, company=None, channel_id=None, playlist_id=No
 
   "if get_video_details returns false, it means youtube API did not find video with specified ID, thus video is private/deleted"
   if video["details"] == False:
-    logging.warning("No video was returned for id {} by API", str(video_id))
+    logging.warning("No video was returned for id {} by API".format(video_id))
     return
 
   #if video["details"]["status"]["publicStatsViewable"]: # youtube api field is not reliable
