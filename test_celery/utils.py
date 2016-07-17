@@ -55,8 +55,8 @@ def parse_video(youtube, video_id, company=None, channel_id=None, playlist_id=No
   video["playlistId"] = playlist_id
   video["details"] = get_video_details(youtube, video_id)
 
-  if video["details"]["status"]["publicStatsViewable"]:
-    parse_advanced_statistics(video_id, company, channel_id, playlist_id)
+  #if video["details"]["status"]["publicStatsViewable"]: # youtube api field is not reliable
+  parse_advanced_statistics(video_id, company, channel_id, playlist_id)
 
   video["details"]["contentDetails"]["caption"] = process_manual_captions(video_id, company, channel_id, playlist_id)
 
@@ -139,9 +139,9 @@ def parse_advanced_statistics(video_id, company=None, channel_id=None, playlist_
       statistics_data_raw = json.loads(cdataNode)
   
   
-  if statistics_data_raw == None:
+  if statistics_data_raw == None: # no advanced statistics available for video
     # pdb.set_trace()
-    logging.warning("Advanced statistics CData not found for video " + str(video_id) + " even though video.status.publicStatsViewable is true, probably a bug in the API")
+    #logging.warning("Advanced statistics CData not found for video " + str(video_id) + " even though video.status.publicStatsViewable is true, probably a bug in the API")
     return False
     
 
@@ -199,6 +199,9 @@ def process_asr_caption(youtube, video_id, company=None, channel_id=None, playli
   authenticated_url = driver.execute_script('return yt.getConfig("TTS_URL");')
 
   driver.quit()
+
+  if authenticated_url == "":
+      return False
 
   """ 
   Step 2:
