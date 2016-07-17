@@ -4,6 +4,7 @@ import os
 
 CELERY_TASK_RESULT_EXPIRES = 30
 CELERYD_POOL_RESTARTS = True
+CELERY_RESULT_BACKEND = None
 
 BROKER_HEARTBEAT = 10
 
@@ -14,5 +15,4 @@ BROKER_POOL_LIMIT = 1 # prevent too many connections to the hosted rabbitmq serv
 app = Celery('test_celery',
 
 broker=os.environ.get("RABBITMQ_BIGWIG_URL", "redis://localhost:6379/0"),
-             backend='rpc://',
              include=['test_celery.tasks'])
