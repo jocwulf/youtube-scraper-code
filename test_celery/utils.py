@@ -153,18 +153,31 @@ def parse_advanced_statistics(video_id, company=None, channel_id=None, playlist_
   statistics_data_raw["playlistId"] = playlist_id
   statistics_data_raw["fetched_at"] = datetime.utcnow()  
 
-  """ clean up """
+  """ clean up
+  many ifs are required, since for some videos, parts of the data are missing, e.g. no daily data or no watch-time data"""
   if "views" in statistics_data_raw:
-    statistics_data_raw["views"]["cumulative"].pop("opt", None)
-    statistics_data_raw["views"]["daily"].pop("opt", None)
+    
+    if "cumulative" in statistics_data_raw["views"]:
+      statistics_data_raw["views"]["cumulative"].pop("opt", None)
+
+    if "daily" in statistics_data_raw["views"]:
+      statistics_data_raw["views"]["daily"].pop("opt", None)
 
   if "watch-time" in statistics_data_raw:
-    statistics_data_raw["watch-time"]["cumulative"].pop("opt", None)
-    statistics_data_raw["watch-time"]["daily"].pop("opt", None)
+
+    if "cumulative" in statistics_data_raw["watch-time"]:
+      statistics_data_raw["watch-time"]["cumulative"].pop("opt", None)
+
+    if "daily" in statistics_data_raw["watch-time"]:
+      statistics_data_raw["watch-time"]["daily"].pop("opt", None)
 
   if "shares" in statistics_data_raw:
-    statistics_data_raw["shares"]["cumulative"].pop("opt", None)
-    statistics_data_raw["shares"]["daily"].pop("opt", None)
+
+    if "cumulative" in statistics_data_raw["shares"]:
+      statistics_data_raw["shares"]["cumulative"].pop("opt", None)
+
+    if "daily" in statistics_data_raw["shares"]:
+      statistics_data_raw["shares"]["daily"].pop("opt", None)
 
 	
   advancedVideoStatistics.save(statistics_data_raw)
