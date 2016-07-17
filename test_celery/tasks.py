@@ -95,7 +95,7 @@ def parse_channel(youtube, channel_id, company):
     
   except Exception, exc:
     clean_channel_data(channel_id)	
-    logging.warning("Error parsing channel " + channel_id + ". Cleaned all data related to channel and initating retry:" 
+    logging.warning("Error parsing channel " + channel_id + ". Cleaned all data related to channel and initating retry:")
     logging.exception(exc)
     raise parse_channel.retry(exc=exc)
   else:
