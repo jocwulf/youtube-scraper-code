@@ -13,6 +13,6 @@ BROKER_POOL_LIMIT = 1 # prevent too many connections to the hosted rabbitmq serv
 
 app = Celery('test_celery',
 
-broker=os.environ.get("RABBITMQ_BIGWIG_RX_URL", "redis://localhost:6379/0"),
+broker=os.environ.get("RABBITMQ_BIGWIG_URL", "redis://localhost:6379/0"),
              backend='rpc://',
              include=['test_celery.tasks'])
