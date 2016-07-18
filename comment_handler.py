@@ -17,10 +17,14 @@ from random import randint
 DEVELOPER_KEYS = [
 # "AIzaSyChV4ClaMn3SLRb2Ks6S0lLKcD9zKLveBA",
 # "AIzaSyDflZM0oBLQ4Zy22UITXmxS-YQEN6gTSWc",
-#  "AIzaSyBJv2rSblBo1qTf_qpVB4KzZRhBzY14PlQ",
-#  "AIzaSyCFp5JjMeB6INbTopPbTRwJXCeBnhvPtI4",
- # "AIzaSyB3bFpEKCg9oYdubxejY783JsJOvpd8E8Q",
- "AIzaSyDzIM-HL6bHYKJc9IQ9WKg1D07eAY9I5tg"
+# "AIzaSyBJv2rSblBo1qTf_qpVB4KzZRhBzY14PlQ",
+# "AIzaSyCFp5JjMeB6INbTopPbTRwJXCeBnhvPtI4",
+# "AIzaSyB3bFpEKCg9oYdubxejY783JsJOvpd8E8Q",
+ "AIzaSyDzIM-HL6bHYKJc9IQ9WKg1D07eAY9I5tg",
+ "AIzaSyBKYY06phdfZwh22kJgCh9phzX965beiBI",
+ "AIzaSyDje7dprx2ANe6DOWJix8yh6HF6f9p_FTQ",
+ "AIzaSyDgVRzebzBCeOdwHXK3mrDKU3JcG-3Aa7s",
+ "AIzaSyBySML8O8Z-GeVZNrOWwFuKnDempAt-qYU"
 ]
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
@@ -80,7 +84,6 @@ if __name__ == "__main__":
     handle =  open(args.csv, "r")
 
   r = csv.reader(handle, delimiter=";")
-  r.next()
   
   if args.validate_urls_only == True:
     print "Validating provided channel urls.."

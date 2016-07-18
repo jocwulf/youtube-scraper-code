@@ -64,19 +64,17 @@ def parse_channel(youtube, channel_id, company):
     
 
     
-    channel = {}
+    channel = get_channel_details(youtube, channel_id)
     channel["_id"] = channel_id
     channel["company"] = company
 
-    channel["details"] = get_channel_details(youtube, channel_id)
-    
     parse_comments_for_channel(youtube, channel_id, company)
     parse_subscriptions_by_channel(youtube, channel_id, company)
     parse_activities_by_channel(youtube, channel_id, company)
 
 
     # parse videos of channel
-    channel["video_ids"] = get_video_ids_by_playlist(youtube, channel["details"]["contentDetails"]["relatedPlaylists"]["uploads"])   
+    channel["video_ids"] = get_video_ids_by_playlist(youtube, channel["contentDetails"]["relatedPlaylists"]["uploads"])   
     for video_id in channel["video_ids"]:
       
       for attempt in range(max_retries_parse_video):
