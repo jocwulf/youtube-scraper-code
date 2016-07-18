@@ -34,7 +34,7 @@ youtubeUrls = db.youtubeUrls
 subscriptions = db.subscriptions
 advancedVideoStatistics = db.extendedStatistics
 captions = db.captions
-activities = db.activities
+_activities = db.activities
 
 """todo: add primary keys """
 
@@ -465,8 +465,7 @@ def parse_activities_by_channel(youtube, channel_id, company):
     activity["_id"] = activity["id"]
     activity.pop("id", None)
     
-    
-    activities.save(activity)   
+    _activities.save(activity)   
   
   
 def get_video_ids_by_playlist(youtube, playlist_id):
