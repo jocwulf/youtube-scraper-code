@@ -17,7 +17,8 @@ import logging
 
 
 # client = MongoClient("mongodb://scrape:scrape@ds015024-a0.mlab.com:15024/youtube-scraping-2", connect=False)
-client = MongoClient("mongodb://scrape:scrape@ds061954.mlab.com:61954/youtube-scraping-1", connect=False)
+client = MongoClient("mongodb://159.203.156.124/test-1", connect=False)
+# client = MongoClient("mongodb://scrape:scrape@ds061954.mlab.com:61954/youtube-scraping-1", connect=False)
 # client = MongoClient("mongodb://localhost/finalTestSPI", connect=False)
 
 db = client.get_default_database()
