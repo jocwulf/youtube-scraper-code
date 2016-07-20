@@ -91,6 +91,11 @@ if __name__ == "__main__":
     print "Initating scraping.."
   
   for company in r: #open csv and skip header
+    
+    """ skip empty lines"""
+    if len(company) == 0:
+      continue
+
     i += 1
 
     security_name = company[0]  
