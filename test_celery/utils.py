@@ -297,16 +297,14 @@ def get_asr_language(youtube, video_id):
     results = youtube.captions().list(
       part="snippet",
       videoId=video_id
+      # no pagination required/offered by API
       
     ).execute()
   except HttpError, e:  
       if str(e.resp.status) == "404": #ignore errors if video is unlisted or blocked
-        pass
+        return False
       else:
         raise e
-
-  if ("items" in results) == False:
-    return False
 
   """ find auto generated caption and return language if found otherwise return false """
   for caption in results["items"]:
@@ -518,6 +516,10 @@ def get_channel_id_from_url(youtube, youtube_url):
         segments = path.split('/')
         username = segments[len(segments) - 1]
         channel_id = get_channel_id_by_name(youtube, username)
+    elif '/c' in path:
+        segments = path.split('/')
+        username = segments[len(segments) - 1]
+        channel_id = get_channel_id_by_name(youtube, username)
     else:
         raise Exception('Url is not a youtube URL: ' + youtube_url)
 
@@ -680,7 +682,7 @@ def parse_replies_for_channel(thread_id, youtube, channel_id, company):
         raise e
         
   for comment in items:
-    comment["commentThreadId"] = thread_id
+    comment["channelCommentThreadId"] = thread_id
     comment["channelId"] = channel_id
     comment["company"] = company
     comment["fetched_at"] = datetime.utcnow()  
@@ -795,7 +797,7 @@ def parse_replies_for_video(thread_id, youtube, video_id=None, company=None, cha
         raise e
         
   for comment in items:
-    comment["commentThreadId"] = thread_id
+    comment["videoCommentThreadId"] = thread_id
     comment["videoId"] = video_id
     comment["channelId"] = channel_id
     comment["playlistId"] = playlist_id
