@@ -17,7 +17,7 @@ import logging
 
 
 # client = MongoClient("mongodb://scrape:scrape@ds015024-a0.mlab.com:15024/youtube-scraping-2", connect=False)
-client = MongoClient("mongodb://159.203.156.124/test-1", connect=False)
+client = MongoClient("mongodb://159.203.156.236/test-1", connect=False)
 # client = MongoClient("mongodb://scrape:scrape@ds061954.mlab.com:61954/youtube-scraping-1", connect=False)
 # client = MongoClient("mongodb://localhost/finalTestSPI", connect=False)
 
@@ -48,20 +48,14 @@ def parse_video(youtube, video_id, company=None, channel_id=None, playlist_id=No
   if check_item_exists(videos, "_id", video_id):
 
     """ check if video was previously saved in database as only belonging to a playlist but not a channel, since when parsing that playlist, the channel to which the video belongs was not yet parsed yet
-    if yes, update the video record to reflect that it belongs to a channel"""
+    if yes, reparse the video record to reflect that it belongs to a channel"""
     
     existing_video = videos.find_one({"_id": video_id})
-
     
     if existing_video["channelId"] == None:
-      videos.update_one({"_id" : video_id}, 
-        {
-        "$set": {  "channelId": channel_id,
-                   "company": company,
-                   "playlist_id": None
-                  }}
-        )  
-    return
+      delete_items(videos, "_id", video_id)
+    else:
+      return
    
   video = get_video_details(youtube, video_id)
 
@@ -243,8 +237,6 @@ def process_asr_caption(youtube, video_id, company=None, channel_id=None, playli
  
   """ if response empty or 404 error, no automatically generated caption is available for the video """
   if r.text.find("<transcript>") < 0:
-    print "error"
-    print asr_subtitle_xml
     return False
 
   """ 
@@ -363,7 +355,10 @@ def process_manual_captions(video_id, company=None, channel_id=None, playlist_id
     
 def check_item_exists(collection, IdFieldIdentifier, id):
     return bool(collection.find_one({IdFieldIdentifier: id}))
-
+    
+def delete_items(collection, IdFieldIdentifier, id):
+    return collection.delete_many({ IdFieldIdentifier : id })
+  
 # returns a mapping of all possible video categories indepent of regions (some categories are only available in specific regions)
 def get_video_categories(youtube):
   results = youtube.videoCategories().list(
