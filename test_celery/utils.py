@@ -196,6 +196,14 @@ def parse_advanced_statistics(video_id, company=None, channel_id=None, playlist_
     if "daily" in statistics_data_raw["shares"]:
       statistics_data_raw["shares"]["daily"].pop("opt", None)
 
+  if "subscribers" in statistics_data_raw:
+
+    if "cumulative" in statistics_data_raw["subscribers"]:
+      statistics_data_raw["subscribers"]["cumulative"].pop("opt", None)
+
+    if "daily" in statistics_data_raw["subscribers"]:
+      statistics_data_raw["subscribers"]["daily"].pop("opt", None)
+
 	
   advancedVideoStatistics.save(statistics_data_raw)
 
