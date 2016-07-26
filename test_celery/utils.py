@@ -510,8 +510,14 @@ def validate_channel_id(youtube, channel_id):
   return results["pageInfo"]["totalResults"] > 0
    
    
-# SOURCE: https://github.com/rhayun/python-youtube-api/blob/master/youtubeapi.py
 def get_channel_id_from_url(youtube, youtube_url):
+  """
+  Extract channeld id from a channel url (youtube_url) using text splitting.
+  If the channel url includes a channel name instead of channel id, use the API to retreive channel id using extracted channel names
+  
+  Originally based on source code from: https://github.com/rhayun/python-youtube-api/blob/master/youtubeapi.py
+
+  """
     path = parse_url_path(youtube_url)
     if '/channel' in path:
         segments = path.split('/')
