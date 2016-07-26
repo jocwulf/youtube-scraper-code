@@ -4,13 +4,15 @@ import time
     
 from celery.contrib import rdb
 from test_celery.utils import *
+from test_celery.scraping import *
+# necessary to fix circular imports
+from test_celery.api import get_video_categories, get_video_details,  parse_comments_for_video, parse_replies_for_video, get_video_ids_by_playlist, get_channel_details, parse_subscriptions_by_channel, parse_activities_by_channel, parse_comments_for_channel, parse_replies_for_channel
 
 import logging
 
-# Configure maximum numbers of retries here
-max_retries_parse_channel = 2
-max_retries_parse_video = 2
-  
+from test_celery.settings import *
+
+
 
 @app.task(ignore_result=True, default_retry_delay=30, max_retries=max_retries_parse_channel) 
 def parse_channel(youtube, channel_id, company):
@@ -33,25 +35,28 @@ def parse_channel(youtube, channel_id, company):
     # If the channel is already saved in the channels collection we can skip it, since it means all information about the channel was previously successfully collected and save in the channel collection and other collections
     if check_item_exists(channels, "_id", channel_id):
       return
+
+    # make sure no leftover data is left in some collection
+    clean_channel_data(channel_id, False)    
     
     # Call helper to retreive basic channel information and save it temporarly until all other helper tasks finish without errors
     channel = get_channel_details(youtube, channel_id)
 
-    # Call helpers that retreive and save comments, subscriptionns, activities and playlistinformation
+    # Call helpers that retreive and save comments, subscriptionns and activities 
     parse_comments_for_channel(youtube, channel_id, company)
     parse_subscriptions_by_channel(youtube, channel_id, company)
     parse_activities_by_channel(youtube, channel_id, company)
-    parse_playlists(youtube, channel_id, company)
 
 
     # Retreives all videos uploaded by the channel and collects information fo each video by calling the respective helper methods
     # Implements the retry/error mechanism outlined in the method specification
     channel["video_ids"] = get_video_ids_by_playlist(youtube, channel["contentDetails"]["relatedPlaylists"]["uploads"])   
+    pdb.set_trace()
     for video_id in channel["video_ids"]:
-  
       for attempt in range(max_retries_parse_video):
         try:
           parse_video(youtube, video_id, company, channel_id) 
+
         except Exception, e:
           if attempt == max_retries_parse_video - 1:
             raise e
@@ -60,6 +65,13 @@ def parse_channel(youtube, channel_id, company):
             logging.warning("Retrying parsing of video %s, attempt %s/%s", video_id, attempt + 1, max_retries_parse_video, exc_info=e)
         else:
           break
+
+
+    # Call helpers that retreive and save comments playlists of the channel.
+    # This needs to be called after processing all videos of the channel, because for each video in the playlist the parse_playlist method will collect information about a video 
+    # if its not already saved in the database and mark it as a video that only belongs to a playlist but not to a company that is in the master list. (See data documentation PDF)
+    from test_celery.api import parse_playlists
+    parse_playlists(youtube, channel_id, company)
 
     
   except Exception, exc:
@@ -74,3 +86,60 @@ def parse_channel(youtube, channel_id, company):
     channel["company"] = company
     channels.save(channel)
     print "parsed channel " + channel_id + " from company " + company 
+
+
+def parse_video(youtube, video_id, company=None, channel_id=None, playlist_id=None):
+  """
+  Collects information for the specified video by calling the respective helper methods.
+  Saves basic video information into the videos collection if all helpers successfully collected information.
+  """
+
+  # Skip  if video already in database
+  if check_item_exists(videos, "_id", video_id):
+
+    """ check if video was previously saved in database as only belonging to a playlist but not a channel, since when parsing that playlist, the channel to which the video belongs was not yet parsed yet
+    if yes, reparse the video record to reflect that it belongs to a channel"""
+    
+    existing_video = videos.find_one({"_id": video_id})
+    
+    if existing_video["channelId"] == None:
+      delete_items(videos, "_id", video_id)
+    else:
+      return
+  
+  # make sure no leftover data is left in some collection
+  clean_video_data(video_id)    
+     
+
+  # Call helper to retreive basic video information and save it temporarly until all other helper tasks finish without errors
+  video = get_video_details(youtube, video_id)
+
+  "if get_video_details returns false, it means youtube API did not find video with specified ID, thus video is private/deleted"
+  if video == False:
+    logging.warning("No video was returned by API for video_id: " + str(video_id) + " channel: " + str(channel_id) + " company: " + str(company) + " playlist: " + str(playlist_id))
+    return
+
+
+  # Call helpers that retreive and save comments for the video  
+  parse_comments_for_video(youtube, video_id, company, channel_id, playlist_id)
+
+  # Call helpers that retreive and save extended statistics and captions, overwrite the retreived corresponding flags in the video object, since the values returned by videos are often inaccurate
+  video["status"]["publicStatsViewable"]  =  parse_advanced_statistics(video_id, company, channel_id, playlist_id)
+  video["contentDetails"]["caption"] = process_manual_captions(video_id, company, channel_id, playlist_id)
+
+  # youtube api does not return caption information for unlisted videos
+  if video["status"]["privacyStatus"] == "unlisted": 
+    video["contentDetails"]["autogeneratedCaption"] = False
+  else:  
+    video["contentDetails"]["autogeneratedCaption"] = process_asr_caption(youtube, video_id, company, channel_id, playlist_id)
+   
+  # Add indexing fields as well as timestamp and save basic channel information in the database 
+  video["fetched_at"] = datetime.utcnow()
+  video["_id"] = video_id 
+  video["company"] = company
+  video["channelId"] = channel_id
+  video["playlistId"] = playlist_id
+  videos.save(video)
+
+  print "parsed video: " + video_id + " channel: " + str(channel_id) + " company: " + str(company) + " playlist: " + str(playlist_id)
+

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 """
-TODO: File description
+Contains Code for Command Line interaction, importing and validating channel urls, API connection and initiating data collection for channels
 """
 
 import httplib2
@@ -19,6 +19,10 @@ from random import randint
 
 from test_celery.utils import *
 from test_celery.tasks import *
+from test_celery.scraping import *
+from test_celery.api import *
+from test_celery.settings import *
+
 
 
 # Specify Youtube API Keys here, the tool will distribute the API requests over the quotas associated with different keys through the get_random_api_access method
@@ -34,22 +38,25 @@ DEVELOPER_KEYS = [
  "AIzaSyDgVRzebzBCeOdwHXK3mrDKU3JcG-3Aa7s",
  "AIzaSyBySML8O8Z-GeVZNrOWwFuKnDempAt-qYU"
 ]
-youtube = [build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=key) for key in DEVELOPER_KEYS]
 
 
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
+youtube = [build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=key) for key in DEVELOPER_KEYS]
+
 
 def get_random_api_access():
   return youtube[randint(0, len(DEVELOPER_KEYS) - 1)]
 
-
 if __name__ == "__main__":
+
+  parse_channel(get_random_api_access(), "UCvNWzY4IrNeSEDGgRoPTzPA", "company")
 
   # Configure required command line arguments
   argparser.add_argument("--csv", help="Required: Path to CSV file with company names and channel urls, also takes web urls, if starting with http://", required=True)
   argparser.add_argument('--validate_urls_only', action='store_true')
   args = argparser.parse_args()
+  
   
   i = 0
 
