@@ -16,10 +16,8 @@ from HTMLParser import HTMLParser
 import logging
 
 
-# client = MongoClient("mongodb://scrape:scrape@ds015024-a0.mlab.com:15024/youtube-scraping-2", connect=False)
 client = MongoClient("mongodb://159.203.156.236/test-1", connect=False)
-# client = MongoClient("mongodb://scrape:scrape@ds061954.mlab.com:61954/youtube-scraping-1", connect=False)
-# client = MongoClient("mongodb://localhost/finalTestSPI", connect=False)
+
 
 db = client.get_default_database()
 videos = db.videos
@@ -38,6 +36,8 @@ captions = db.captions
 _activities = db.activities
 
 """todo: add primary keys """
+
+advancedVideoStatistics.ensureIndex({videoId:1}, { unique: true } ) # use videoID as index key to prevent duplicates
 
 
 #TODO: MOVE THIS

@@ -11,9 +11,9 @@ from apiclient.errors import HttpError
 from oauth2client.tools import argparser
 import pdb
 
-
 from random import randint
 
+# Specify Youtube API Keys here, the tool will distribute the API requests over the quotas associated with different keys through the get_random_api_access method
 DEVELOPER_KEYS = [
 "AIzaSyChV4ClaMn3SLRb2Ks6S0lLKcD9zKLveBA",
 "AIzaSyDflZM0oBLQ4Zy22UITXmxS-YQEN6gTSWc",
@@ -26,6 +26,7 @@ DEVELOPER_KEYS = [
  "AIzaSyDgVRzebzBCeOdwHXK3mrDKU3JcG-3Aa7s",
  "AIzaSyBySML8O8Z-GeVZNrOWwFuKnDempAt-qYU"
 ]
+
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
 
@@ -37,9 +38,6 @@ if __name__ == "__main__":
   from test_celery.utils import *
   from test_celery.tasks import *
   youtube = [build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=key) for key in DEVELOPER_KEYS]
- 
-
-  # pdb.set_trace()
 
   # parse_video(get_random_api_access(), "6MdkPES4KYM", "test_comp", "test_channel")
 
