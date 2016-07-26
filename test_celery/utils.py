@@ -1,3 +1,8 @@
+#!/usr/bin/python
+"""
+TODO: File description
+"""
+
 import json
 from apiclient.errors import HttpError
 from urlparse import urlparse
@@ -16,9 +21,8 @@ from HTMLParser import HTMLParser
 import logging
 
 
+# Configure database connection and collection names here
 client = MongoClient("mongodb://159.203.156.236/test-1", connect=False)
-
-
 db = client.get_default_database()
 videos = db.videos
 channels = db.channels
@@ -35,13 +39,12 @@ advancedVideoStatistics = db.extendedStatistics
 captions = db.captions
 _activities = db.activities
 
-"""todo: add primary keys """
 
-advancedVideoStatistics.ensureIndex({videoId:1}, { unique: true } ) # use videoID as index key to prevent duplicates
+# ensures that additional unique indices are set in mongodb to prevent duplicate entries, for collections that do not use the default mongodb unique index "_did"
+advancedVideoStatistics.ensureIndex({videoId:1}, { unique: true } ) 
 
 
 #TODO: MOVE THIS
-#@app.task(ignore_result=True, default_retry_delay=30, max_retries=3) 
 # TODO Document: playlist_id only set if video was parsed because it is included in a playlist of a parsed channel, but the video belongs to a channel that is not in our database
 def parse_video(youtube, video_id, company=None, channel_id=None, playlist_id=None):
   #skip parsing if video already in database
