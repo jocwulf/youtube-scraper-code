@@ -61,7 +61,7 @@ def get_video_details(youtube, video_id):
   return results["items"][0]
 
 
-def parse_comments_for_video(youtube, video_id, company=None, channel_id=None, playlist_id=None):
+def parse_comments_for_video(youtube, video_id, company=None, channel_id=None):
   """
   Retrieves and saves all commentThreads for a given youtube video using the API and calls the parse_replies_for_video method for each thread to retreive and save the replies to each commentThread
   Youtube API Reference: https://developers.google.com/youtube/v3/docs/comments/list
@@ -95,7 +95,6 @@ def parse_comments_for_video(youtube, video_id, company=None, channel_id=None, p
     commentThread["videoId"] = video_id
     commentThread["channelId"] = channel_id
     commentThread["company"] = company
-    commentThread["playlistId"] = playlist_id
     commentThread["fetched_at"] = datetime.utcnow()  
     commentThread["_id"] = commentThread["id"]
     commentThread.pop("id", None)
@@ -114,7 +113,7 @@ def parse_comments_for_video(youtube, video_id, company=None, channel_id=None, p
     videoComments.save(commentThread)   
 
  
-def parse_replies_for_video(thread_id, youtube, video_id=None, company=None, channel_id=None, playlist_id=None):
+def parse_replies_for_video(thread_id, youtube, video_id=None, company=None, channel_id=None):
   """
   This method is called by the parse_comments_for_video method to retreive and save the replies to a given commentThread (thread_id)
   Youtube API Reference: https://developers.google.com/youtube/v3/docs/comments/list
@@ -145,7 +144,6 @@ def parse_replies_for_video(thread_id, youtube, video_id=None, company=None, cha
     comment["videoCommentThreadId"] = thread_id
     comment["videoId"] = video_id
     comment["channelId"] = channel_id
-    comment["playlistId"] = playlist_id
     comment["company"] = company
     comment["fetched_at"] = datetime.utcnow()  
     comment["_id"] = comment["id"]
