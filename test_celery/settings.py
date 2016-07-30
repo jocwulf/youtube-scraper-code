@@ -23,3 +23,18 @@ captions = db.captions
 # Configure maximum numbers of retries here
 max_retries_parse_channel = 2
 max_retries_parse_video = 2
+
+
+# Specify Youtube API Keys here, the tool will distribute the API requests over the quotas associated with different keys through the get_random_api_access method
+DEVELOPER_KEYS = [
+"AIzaSyChV4ClaMn3SLRb2Ks6S0lLKcD9zKLveBA",
+"AIzaSyDflZM0oBLQ4Zy22UITXmxS-YQEN6gTSWc",
+"AIzaSyBJv2rSblBo1qTf_qpVB4KzZRhBzY14PlQ",
+"AIzaSyCFp5JjMeB6INbTopPbTRwJXCeBnhvPtI4",
+"AIzaSyB3bFpEKCg9oYdubxejY783JsJOvpd8E8Q",
+ "AIzaSyDzIM-HL6bHYKJc9IQ9WKg1D07eAY9I5tg",
+ "AIzaSyBKYY06phdfZwh22kJgCh9phzX965beiBI",
+ "AIzaSyDje7dprx2ANe6DOWJix8yh6HF6f9p_FTQ",
+ "AIzaSyDgVRzebzBCeOdwHXK3mrDKU3JcG-3Aa7s",
+ "AIzaSyBySML8O8Z-GeVZNrOWwFuKnDempAt-qYU"
+]

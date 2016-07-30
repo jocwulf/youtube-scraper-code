@@ -16,7 +16,6 @@ from test_celery.utils import *
 
 
 
-
 """
 ============================== VIDEO ==============================
 """
@@ -204,8 +203,6 @@ def get_channel_details(youtube, channel_id):
   ).execute()
   
   return results["items"][0]
-
-
  
  
 def parse_subscriptions_by_channel(youtube, channel_id, company):

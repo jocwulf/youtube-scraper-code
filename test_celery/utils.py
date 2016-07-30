@@ -13,9 +13,9 @@ from test_celery.settings import *
 
 
 
-# TODO: Add more indices if wanted
+# Add more indices if wanted
 # ensures that additional unique indices are set in mongodb to prevent duplicate entries, for collections that do not use the default mongodb unique index "_did"
-# advancedVideoStatistics.ensure_index("videoId", unique=True)
+advancedVideoStatistics.ensure_index("videoId", unique=True)
 
 
     
@@ -26,25 +26,6 @@ def delete_items(collection, IdFieldIdentifier, id):
     return collection.delete_many({ IdFieldIdentifier : id })
  
 
-def get_channel_id_by_name(youtube, username):
-  results = youtube.channels().list(
-    part="snippet",
-    forUsername=username,
-    
-  ).execute()
-  
-  return results["items"][0]["id"]
-  
-def validate_channel_id(youtube, channel_id):
-  results = youtube.channels().list(
-    part="snippet",
-    id=channel_id,
-    
-  ).execute()
-  
-  # channel id is valid if at least one channel corresponds to provided id
-  return results["pageInfo"]["totalResults"] > 0
-   
    
 def get_channel_id_from_url(youtube, youtube_url):
   """
@@ -74,7 +55,29 @@ def get_channel_id_from_url(youtube, youtube_url):
 def parse_url_path(url):
   array = urlparse(url)
   return array[2]
+
+
+def get_channel_id_by_name(youtube, username):
+  results = youtube.channels().list(
+    part="snippet",
+    forUsername=username,
+    
+  ).execute()
   
+  return results["items"][0]["id"]
+  
+def validate_channel_id(youtube, channel_id):
+  results = youtube.channels().list(
+    part="snippet",
+    id=channel_id,
+    
+  ).execute()
+  
+  # channel id is valid if at least one channel corresponds to provided id
+  return results["pageInfo"]["totalResults"] > 0
+   
+
+
 def clean_channel_data(channel_id, delete_associated_videos=True):  
   """
   Remove all data associated with channel to allow clean restart of channel parsing 
@@ -94,7 +97,6 @@ def clean_channel_data(channel_id, delete_associated_videos=True):
   channel_activities.delete_many({ "channelId" : channel_id })
   playlists.delete_many({ "channelId" : channel_id })
   db.playlistItems.delete_many({ "channelId" : channel_id }) 
-  
 
 def clean_video_data(video_id):  
   """

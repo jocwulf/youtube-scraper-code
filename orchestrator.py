@@ -25,20 +25,6 @@ from test_celery.settings import *
 
 
 
-# Specify Youtube API Keys here, the tool will distribute the API requests over the quotas associated with different keys through the get_random_api_access method
-DEVELOPER_KEYS = [
-"AIzaSyChV4ClaMn3SLRb2Ks6S0lLKcD9zKLveBA",
-"AIzaSyDflZM0oBLQ4Zy22UITXmxS-YQEN6gTSWc",
-"AIzaSyBJv2rSblBo1qTf_qpVB4KzZRhBzY14PlQ",
-"AIzaSyCFp5JjMeB6INbTopPbTRwJXCeBnhvPtI4",
-"AIzaSyB3bFpEKCg9oYdubxejY783JsJOvpd8E8Q",
- "AIzaSyDzIM-HL6bHYKJc9IQ9WKg1D07eAY9I5tg",
- "AIzaSyBKYY06phdfZwh22kJgCh9phzX965beiBI",
- "AIzaSyDje7dprx2ANe6DOWJix8yh6HF6f9p_FTQ",
- "AIzaSyDgVRzebzBCeOdwHXK3mrDKU3JcG-3Aa7s",
- "AIzaSyBySML8O8Z-GeVZNrOWwFuKnDempAt-qYU"
-]
-
 
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
@@ -50,7 +36,40 @@ def get_random_api_access():
 
 if __name__ == "__main__":
 
-  parse_channel(get_random_api_access(), "UCvNWzY4IrNeSEDGgRoPTzPA", "company")
+  process_manual_captions("LAeZw752VDA",None,None,"-1")
+
+  channels = [
+    "UCK8sQmJBp8GCxrOtXWBpyEA",
+    "UCWf2ZlNsCGDS89VBF_awNvA",
+    "UCBmwzQnSoj9b6HzNmFrg_yw",
+    "UCnIQPPwWpO_EFEqLny6TFTw",
+    "UCrRK02_CbvPEPrDYMQ1l49w",
+    "UCbmNph6atAoGfqLoCL_duAg",
+    "UC_x5XG1OV2P6uZZ5FSM9Ttw",
+    "UCL8ZULXASCc1I_oaOT0NaOQ",
+    "UCL0iAkpqV5YaIVG7xkDtS4Q",
+    "UClH-KpveOLJszChWRfFmPfQ",
+    "UCOn4qooT6CDN8MYyCKtbPXA",
+    "UCRnX4Yc585eRTj4UvNkBM8w",
+    "UCced_wdSslkOf7xc_0qyT8w",
+    "UCAdEqOhSnzlLBtaapu567AQ",
+    "UCAdEqOhSnzlLBtaapu567AQ",
+    "UCCQsxghGcSyzpDqAP3c50ig",
+    "UCXQexglLCaJyTImYLmSO9Ng",
+    "UCDndFlHdnnygb1v3UwfCEuA",
+    "UCosXctaTYxN4YPIvI5Fpcrw",
+    "UCWZTQLvNSm92fZPnjVGFRIA"
+  ]
+
+  i = 0
+  for channel in channels:
+    parse_channel(get_random_api_access(), channel, "company")
+
+    #if (i%5==0):
+    #  pdb.set_trace()
+
+    i += 1
+
 
   # Configure required command line arguments
   argparser.add_argument("--csv", help="Required: Path to CSV file with company names and channel urls, also takes web urls, if starting with http://", required=True)
