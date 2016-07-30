@@ -96,9 +96,14 @@ def parse_video(youtube, video_id, company=None, channel_id=None, playlist_id=No
 
   # Skip  if video already in database
   if check_item_exists(videos, "_id", video_id):
+    return  
 
-    """ check if video was previously saved in database as only belonging to a playlist but not a channel, since when parsing that playlist, the channel to which the video belongs was not yet parsed yet
-    if yes, reparse the video record to reflect that it belongs to a channel"""
+  """ deactivated crawling of videos that only belong to a playlist but not to a company that we are crawling
+  for now to speed up crawling process, since currently not needed for research
+  if check_item_exists(videos, "_id", video_id):
+
+    # check if video was previously saved in database as only belonging to a playlist but not a channel, since when parsing that playlist, the channel to which the video belongs was not yet parsed yet
+    # if yes, reparse the video record to reflect that it belongs to a channel
     
     existing_video = videos.find_one({"_id": video_id})
     
@@ -106,6 +111,8 @@ def parse_video(youtube, video_id, company=None, channel_id=None, playlist_id=No
       delete_items(videos, "_id", video_id)
     else:
       return
+
+  """
   
   # make sure no leftover data is left in some collection
   clean_video_data(video_id)    

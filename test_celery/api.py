@@ -437,13 +437,16 @@ def parse_playlist_items(youtube, playlist_id, channel_id, company):
     playlistItem["_id"] = playlistItem["id"]
     playlistItem.pop("id", None)
 
+
+    """ deactivated for now to speed up crawling process, since currently not needed for research
     # parse and save video if not already in database (for the case that a playlist contains videos that belong to another channel)
     if playlistItem["snippet"]["resourceId"]["kind"] == "youtube#video":
       playlistVideoId = playlistItem["snippet"]["resourceId"]["videoId"]
       from tasks import parse_video  
       if check_item_exists(videos, "_id", playlistVideoId) == False:
         parse_video(youtube, playlistVideoId, None, None, playlistItem["snippet"]["playlistId"])
-  
+    """
+
     try:
       db.playlistItems.save(playlistItem) 
     except pymongo.errors.DuplicateKeyError:
