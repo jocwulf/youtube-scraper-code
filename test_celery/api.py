@@ -370,9 +370,9 @@ def parse_replies_for_channel(thread_id, youtube, channel_id, company):
 
 
   
-def parse_playlists(youtube, channel_id, company):
+def parse_regular_playlists(youtube, channel_id, company):
   """
-  Retrieves and saves all playlists for a given youtube channel using the API and calls the parse_playlist_items method for each playlistItem
+  Retrieves and saves all regular playlists (not related playlists that for example contains likes of the channel) for a given youtube channel using the API and calls the parse_playlist_items method for each playlistItem
   Youtube API Reference: https://developers.google.com/youtube/v3/docs/playlists/list
   """
     
@@ -389,23 +389,53 @@ def parse_playlists(youtube, channel_id, company):
     items = items + results["items"]
     request = playlists.list_next(request, results)
      
-  playlists_ids = []
   for playlist in items:
-  
     playlist["channelId"] = channel_id
     playlist["company"] = company
+    playlist["type"] = "regular"
     playlist["fetched_at"] = datetime.utcnow()  
-    parse_playlist_items(youtube, playlist["id"], channel_id, company)
+    parse_playlist_items(youtube, playlist["id"], "regular", channel_id, company)
     playlist["_id"] = playlist["id"]
     playlist["fetched_at"] = datetime.utcnow() 
     playlist.pop("id", None)
 
     db.playlists.save(playlist)
-    playlists_ids.append(playlist["_id"]) 
-  
-  return playlists_ids
+
+
+def parse_related_playlists(youtube, related_playlists, channel_id, company):
+  """
+  Retrieve and save related playlists (e.g. videos liked or favorited by the channel) for a given youtube channel using the API and calls the parse_playlist_items method for each playlistItem
+  Youtube API Reference: https://developers.google.com/youtube/v3/docs/channels, https://developers.google.com/youtube/v3/docs/playlists
+  """
+
+  # Loop through related playlists while ignorning the related playlist that only contains uploads
+  for (playlist_type, related_playlist_id) in related_playlists.items():
+    if playlist_type != "uploads":
+
+      playlists = youtube.playlists()
+      request = playlists.list(
+        part="id,player,snippet,status",
+        id=related_playlist_id,
         
-def parse_playlist_items(youtube, playlist_id, channel_id, company):   
+      )
+      
+      results = request.execute()
+      
+      for playlist in results["items"]:
+      
+        playlist["channelId"] = channel_id
+        playlist["company"] = company
+        playlist["type"] = playlist_type
+        playlist["fetched_at"] = datetime.utcnow()  
+        parse_playlist_items(youtube, playlist["id"], playlist_type, channel_id, company)
+        playlist["_id"] = playlist["id"]
+        playlist["fetched_at"] = datetime.utcnow() 
+        playlist.pop("id", None)
+
+        db.playlists.save(playlist)
+
+        
+def parse_playlist_items(youtube, playlist_id, playlist_type, channel_id, company):   
   """
   This method is called by the parse_playlists method to retreive and save mor detailed information about a single playlistItem
   For each playlistItem it also calls the parse_video method to collect and save all relevant information about the video included in the playlistItem, if the video is not already in the database. 
@@ -429,6 +459,7 @@ def parse_playlist_items(youtube, playlist_id, channel_id, company):
  
   for playlistItem in items:
     playlistItem["playlistId"] = playlist_id
+    playlistItem["playlistType"] = playlist_type
     playlistItem["channelId"] = channel_id
     playlistItem["company"] = company
     playlistItem["fetched_at"] = datetime.utcnow()  

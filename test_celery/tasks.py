@@ -41,7 +41,7 @@ def parse_channel(youtube, channel_id, company):
     
     # Call helper to retreive basic channel information and save it temporarly until all other helper tasks finish without errors
     channel = get_channel_details(youtube, channel_id)
-
+  
     # Call helpers that retreive and save comments, subscriptionns and activities 
     parse_comments_for_channel(youtube, channel_id, company)
     parse_subscriptions_by_channel(youtube, channel_id, company)
@@ -67,12 +67,12 @@ def parse_channel(youtube, channel_id, company):
           break
 
 
-    # Call helpers that retreive and save comments playlists of the channel.
-    # This needs to be called after processing all videos of the channel, because for each video in the playlist the parse_playlist method will collect information about a video 
-    # if its not already saved in the database and mark it as a video that only belongs to a playlist but not to a company that is in the master list. (See data documentation PDF)
+    # Call helpers that retrieve and save regular playlists of the channel.
     from test_celery.api import parse_playlists
-    parse_playlists(youtube, channel_id, company)
+    parse_regular_playlists(youtube, channel_id, company)
 
+    # Retrieve and save related playlists (e.g. videos liked or favorited by the channel)
+    parse_related_playlists(youtube, channel["contentDetails"]["relatedPlaylists"], channel_id, company)
     
   except Exception, exc:
     clean_channel_data(channel_id)	

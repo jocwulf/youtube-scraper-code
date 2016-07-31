@@ -36,7 +36,6 @@ def get_random_api_access():
 
 if __name__ == "__main__":
 
-  process_manual_captions("LAeZw752VDA",None,None,"-1")
 
   channels = [
     "UCK8sQmJBp8GCxrOtXWBpyEA",
