@@ -68,7 +68,7 @@ def parse_channel(youtube, channel_id, company):
 
 
     # Call helpers that retrieve and save regular playlists of the channel.
-    from test_celery.api import parse_playlists
+    from test_celery.api import parse_regular_playlists
     parse_regular_playlists(youtube, channel_id, company)
 
     # Retrieve and save related playlists (e.g. videos liked or favorited by the channel)
