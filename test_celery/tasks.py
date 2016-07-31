@@ -75,7 +75,7 @@ def parse_channel(youtube, channel_id, company):
     parse_related_playlists(youtube, channel["contentDetails"]["relatedPlaylists"], channel_id, company)
     
   except Exception, exc:
-    clean_channel_data(channel_id)	
+    clean_channel_data(channel_id, False)	
     logging.warning("Error parsing channel %s. Cleaned all data related to channel and initating retry:", channel_id, exc_info=exc)
     raise parse_channel.retry(exc=exc)
   else:

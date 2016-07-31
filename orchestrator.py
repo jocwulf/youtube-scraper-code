@@ -36,7 +36,7 @@ def get_random_api_access():
 
 if __name__ == "__main__":
 
-
+  """
   channels = [
     "UCK8sQmJBp8GCxrOtXWBpyEA",
     "UCWf2ZlNsCGDS89VBF_awNvA",
@@ -62,13 +62,11 @@ if __name__ == "__main__":
 
   i = 0
   for channel in channels:
+    print channel
     parse_channel(get_random_api_access(), channel, "company")
 
-    #if (i%5==0):
-    #  pdb.set_trace()
-
     i += 1
-
+  """
 
   # Configure required command line arguments
   argparser.add_argument("--csv", help="Required: Path to CSV file with company names and channel urls, also takes web urls, if starting with http://", required=True)

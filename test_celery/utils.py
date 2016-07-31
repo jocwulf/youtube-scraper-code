@@ -11,13 +11,6 @@ import logging
 
 from test_celery.settings import *
 
-
-
-# Add more indices if wanted
-# ensures that additional unique indices are set in mongodb to prevent duplicate entries, for collections that do not use the default mongodb unique index "_did"
-advancedVideoStatistics.ensure_index("videoId", unique=True)
-
-
     
 def check_item_exists(collection, IdFieldIdentifier, id):
     return bool(collection.find_one({IdFieldIdentifier: id}))

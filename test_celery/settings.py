@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 
 # Configure database connection and collection names here
-client = MongoClient("mongodb://159.203.156.236/testing", connect=False)
+client = MongoClient("mongodb://159.203.156.236/testing-2", connect=False)
 db = client.get_default_database()
 
 videos = db.videos
@@ -18,6 +18,10 @@ subscriptions = db.subscriptions
 channel_activities = db.activities
 advancedVideoStatistics = db.extendedStatistics
 captions = db.captions
+
+# ensures that additional unique indices are set in mongodb to prevent duplicate entries, for collections that do not use the default mongodb unique index "_did"
+advancedVideoStatistics.ensure_index("videoId", unique=True)
+captions
 
 
 # Configure maximum numbers of retries here
