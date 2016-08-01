@@ -15,6 +15,9 @@ from test_celery.settings import *
 from test_celery.utils import *
 
 
+from pymongo import MongoClient
+
+
 
 """
 ============================== VIDEO ==============================
