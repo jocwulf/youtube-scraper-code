@@ -18,5 +18,5 @@ BROKER_TRANSPORT_OPTIONS = {'confirm_publish': True}
 BROKER_POOL_LIMIT = 1 # prevent too many connections to the hosted rabbitmq service (some services have restrictions on the number of concurrent connections)
 
 app = Celery('test_celery',
-broker=os.environ.get("CLOUDAMQP_URL", "redis://localhost:6379/0"),
+broker=os.environ.get("CLOUDAMQP_URL", os.environ.get("RABBITMQ_BIGWIG_URL", "redis://localhost:6379/0")),
              include=['test_celery.tasks'])
