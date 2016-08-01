@@ -279,7 +279,7 @@ def process_manual_captions(video_id, company=None, channel_id=None):
 
 	for caption_meta_info in captions_list:
 
-		r = requests.get("https://video.google.com/timedtext?hl={0}&lang={0}&name={1}&v={2}".format(caption_meta_info["language"], caption_meta_info["name"], video_id))
+		r = requests.get("https://video.google.com/timedtext?hl={0}&lang={0}&name={1}&v={2}".format(caption_meta_info["language"].encode("utf-8"), caption_meta_info["name"].encode("utf-8"), video_id))
 
 		""" Format xml formatted caption and extract plain text from xml formatted caption using regular expression  """
 		caption = clean_captions_xml_and_extract_plain_text(r.text)
