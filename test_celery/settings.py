@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 
 # Configure database connection and collection names here
-client = MongoClient("mongodb://159.203.156.236/testing-2", connect=False)
+client = MongoClient(os.environ.get("MONGODB_URL","mongodb://159.203.156.236/debug"), connect=False)
 db = client.get_default_database()
 
 videos = db.videos
