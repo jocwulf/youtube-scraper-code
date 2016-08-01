@@ -10,12 +10,10 @@ Please refer to parse_comments_for_video() for detailed comments on the standard
 from apiclient.errors import HttpError
 from datetime import datetime
 import logging
+import pymongo
 
 from test_celery.settings import *
 from test_celery.utils import *
-
-
-from pymongo import MongoClient
 
 
 
