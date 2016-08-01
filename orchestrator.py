@@ -73,8 +73,6 @@ if __name__ == "__main__":
   argparser.add_argument('--validate_urls_only', action='store_true')
   args = argparser.parse_args()
   
-  
-  i = 0
 
   # Request videoCategories from API and save in database, if these are not already in the database 
   if (db.videoCategories.count() == 0):
@@ -83,8 +81,10 @@ if __name__ == "__main__":
   
 
   # Load channel urls from specified direct web url to csv file or from specified path to local csv file
-  i = 0
-  v = 0
+  i = 0 # keep track of urls processed from file
+  v = 0 # keep track of number of parse_channel jobs started
+  channel_ids = [] # Keep track of channel ids to catch duplicate channel ids within imported csv file
+  duplicates_count = 0
 
   if args.csv.startswith("https://") or args.csv.startswith("http://"):
     url = args.csv
@@ -122,9 +122,17 @@ if __name__ == "__main__":
         logging.error(" Extracting channel id from " + str(channel_url) + " failed")
         continue
       
+      # Check for duplicate channel ids in input file
+      if channel_id in channel_ids:
+        duplicates_count += 1
+        logging.error(" Duplicate channel id "  + str(channel_id) + " from " + str(channel_url) + " is included multiple times in the file")
+        continue
+      else:
+        channel_ids.append(channel_id)
+
       # Validate extracted channel id by trying to retreive information about the channel from the Youtube API
       if validate_channel_id(get_random_api_access(), channel_id) == False:
-        logging.error(" Extracted channel id " + channel_id +  " from " + channel_url + " is invalid.")
+        logging.error(" Extracted channel id " + channel_id +  " from " + channel_url + " is invalid")
         continue
        
       # If valdidation only mode is not activated, check if channel is already saved in database. If not iniatiate data collection
@@ -140,6 +148,6 @@ if __name__ == "__main__":
   
   # Output statistics about results
   if args.validate_urls_only == False:
-    print "Result: Succesfully initated data collection for " + str(v) + " / " + str(i) + " channels"
+    print "Result: Succesfully initated data collection for " + str(v) + " / " + str(i) + " channels. Ignored " + str(duplicates_count) + " duplicates and " + str(i-v-duplicates_count) + " errors"
   else:
-    print "Result:" + str(v) + " / " + str(i) + " channel urls valid"
+    print "Result:" + str(v) + " / " + str(i) + " channel urls valid: " + str(duplicates_count) + " duplicates and " + str(i-v-duplicates_count) + " errors"
