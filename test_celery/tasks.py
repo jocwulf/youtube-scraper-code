@@ -65,9 +65,10 @@ def parse_channel(youtube, channel_id, company):
             clean_video_data(video_id)
             logging.error("Retrying parsing of video %s from channel %s, attempt %s/%s", video_id, channel_id, attempt + 1, max_retries_parse_video, exc_info=e)
         else:
-          i += 1
-          print "parsed video: " + video_id + "  " + str(i) + "/" + str(len(channel["video_ids"])) + " of channel: " + str(channel_id) + " company: " + str(company)
           break
+      i += 1
+      print "parsed video: " + video_id + "  " + str(i) + "/" + str(len(channel["video_ids"])) + " of channel: " + str(channel_id) + " company: " + str(company)
+              
 
 
     # Call helpers that retrieve and save regular playlists of the channel.
