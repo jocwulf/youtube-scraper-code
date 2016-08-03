@@ -1,1 +1,1 @@
-worker: celery -A test_celery worker --loglevel=warning --concurrency=10 --without-gossip --without-mingle --without-heartbeat
+worker: celery -A test_celery worker --loglevel=warning --concurrency=5 --without-gossip --without-mingle --without-heartbeat
