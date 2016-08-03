@@ -36,38 +36,6 @@ def get_random_api_access():
 
 if __name__ == "__main__":
 
-  """
-  channels = [
-    "UCK8sQmJBp8GCxrOtXWBpyEA",
-    "UCWf2ZlNsCGDS89VBF_awNvA",
-    "UCBmwzQnSoj9b6HzNmFrg_yw",
-    "UCnIQPPwWpO_EFEqLny6TFTw",
-    "UCrRK02_CbvPEPrDYMQ1l49w",
-    "UCbmNph6atAoGfqLoCL_duAg",
-    "UC_x5XG1OV2P6uZZ5FSM9Ttw",
-    "UCL8ZULXASCc1I_oaOT0NaOQ",
-    "UCL0iAkpqV5YaIVG7xkDtS4Q",
-    "UClH-KpveOLJszChWRfFmPfQ",
-    "UCOn4qooT6CDN8MYyCKtbPXA",
-    "UCRnX4Yc585eRTj4UvNkBM8w",
-    "UCced_wdSslkOf7xc_0qyT8w",
-    "UCAdEqOhSnzlLBtaapu567AQ",
-    "UCAdEqOhSnzlLBtaapu567AQ",
-    "UCCQsxghGcSyzpDqAP3c50ig",
-    "UCXQexglLCaJyTImYLmSO9Ng",
-    "UCDndFlHdnnygb1v3UwfCEuA",
-    "UCosXctaTYxN4YPIvI5Fpcrw",
-    "UCWZTQLvNSm92fZPnjVGFRIA"
-  ]
-
-  i = 0
-  for channel in channels:
-    print channel
-    parse_channel(get_random_api_access(), channel, "company")
-
-    i += 1
-  """
-
   # Configure required command line arguments
   argparser.add_argument("--csv", help="Required: Path to CSV file with company names and channel urls, also takes web urls, if starting with http://", required=True)
   argparser.add_argument('--validate_urls_only', action='store_true')
@@ -85,6 +53,7 @@ if __name__ == "__main__":
   v = 0 # keep track of number of parse_channel jobs started
   channel_ids = [] # Keep track of channel ids to catch duplicate channel ids within imported csv file
   duplicates_count = 0
+  already_parsed = 0 # Keep track of channel ids already saved in database
 
   if args.csv.startswith("https://") or args.csv.startswith("http://"):
     url = args.csv
@@ -138,6 +107,7 @@ if __name__ == "__main__":
       # If valdidation only mode is not activated, check if channel is already saved in database. If not iniatiate data collection
       if args.validate_urls_only == False:
         if check_item_exists(channels, "_id", channel_id) == True:
+          already_parsed += 1
           continue  
 	  
         print("Initated data collection and scraping for " + channel_id + " " + security_name)
@@ -148,6 +118,6 @@ if __name__ == "__main__":
   
   # Output statistics about results
   if args.validate_urls_only == False:
-    print "Result: Succesfully initated data collection for " + str(v) + " / " + str(i) + " channels. Ignored " + str(duplicates_count) + " duplicates and " + str(i-v-duplicates_count) + " errors"
+    print "Result: Succesfully initated data collection for " + str(v) + " / " + str(i) + " channels. " + str(already_parsed) + " channels already in database. Ignored " + str(duplicates_count) + " duplicates and " + str(i-v-duplicates_count-already_parsed) + " errors"
   else:
     print "Result:" + str(v) + " / " + str(i) + " channel urls valid: " + str(duplicates_count) + " duplicates and " + str(i-v-duplicates_count) + " errors"
