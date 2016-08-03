@@ -52,6 +52,7 @@ def parse_channel(youtube, channel_id, company):
     # Implements the retry/error mechanism outlined in the method specification
     channel["video_ids"] = get_video_ids_by_playlist(youtube, channel["contentDetails"]["relatedPlaylists"]["uploads"])   
     
+    i = 1
     for video_id in channel["video_ids"]:
       for attempt in range(max_retries_parse_video):
         try:
@@ -64,6 +65,8 @@ def parse_channel(youtube, channel_id, company):
             clean_video_data(video_id)
             logging.error("Retrying parsing of video %s from channel %s, attempt %s/%s", video_id, channel_id, attempt + 1, max_retries_parse_video, exc_info=e)
         else:
+          i += 1
+          print "parsed video: " + video_id + "  " + str(i) + "/" + str(len(channel["video_ids"])) + " of channel: " + str(channel_id) + " company: " + str(company)
           break
 
 
@@ -96,7 +99,7 @@ def parse_video(youtube, video_id, company=None, channel_id=None):
 
   # Skip  if video already in database
   if check_item_exists(videos, "_id", video_id):
-    return  
+    return False
 
   """ deactivated crawling of videos that only belong to a playlist but not to a company that we are crawling
   for now to speed up crawling process, since currently not needed for research
@@ -124,7 +127,7 @@ def parse_video(youtube, video_id, company=None, channel_id=None):
   "if get_video_details returns false, it means youtube API did not find video with specified ID, thus video is private/deleted"
   if video == False:
     logging.warning("No video was returned by API for video_id: " + str(video_id) + " channel: " + str(channel_id) + " company: " + str(company))
-    return
+    return False
 
 
   # Call helpers that retreive and save comments for the video  
@@ -147,5 +150,5 @@ def parse_video(youtube, video_id, company=None, channel_id=None):
   video["channelId"] = channel_id
   videos.save(video)
 
-  print "parsed video: " + video_id + " channel: " + str(channel_id) + " company: " + str(company)
+  return True
 

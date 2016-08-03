@@ -1,5 +1,8 @@
 """
- Modified Version of https://github.com/surya-shodan/mongoexportcsv allows exports irrespective of structural differences within documents of a collection
+ Modified Version of https://github.com/surya-shodan/mongoexportcsv allows exports irrespective of structural differences within documents of a collection.
+ This means that in contrast to the mongocsvexport tool shipped with MongoDB, it is not necessary to specify an explicit list of data fields that should be exported.
+ The tool automatically generates a list with all relevant fields based on the specified filter, so that only fields that actually contain information for the filtered dataset are shown in the file.
+
  Added:
  - xls export
  - added utf-8 encoding support, improved formatting
