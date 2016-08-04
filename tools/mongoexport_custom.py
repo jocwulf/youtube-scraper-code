@@ -89,7 +89,7 @@ def csv2xls(infile,xlspath):
     wb.save(xlspath)
 
 def print_usage():
-    print ('python3 mongoexportcsv_custom.py "mongodb://username:password@domain:port "db-name" "table-name" "filter (e.g. {\\"_id\":\\"q05nK_EwqiQ\\"} to filter by _id or {} for all database entries)"')
+    print ('python3 mongoexportcsv_custom.py "mongodb://username:password@domain:port "db-name" "collection-name" "filter (e.g. {\\"_id\":\\"q05nK_EwqiQ\\"} to filter by _id or {} for all database entries)"')
 
 def main():
     if len(sys.argv) != 5:
