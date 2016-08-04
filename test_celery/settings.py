@@ -30,6 +30,10 @@ max_retries_parse_channel = 2
 max_retries_parse_video = 2
 
 
+# Configure scraping web requests time out (in seconds)
+requests_timeout = 15
+
+
 # Specify Youtube API Keys here, the tool will distribute the API requests over the quotas associated with different keys through the get_random_api_access method
 DEVELOPER_KEYS = [
 "AIzaSyChV4ClaMn3SLRb2Ks6S0lLKcD9zKLveBA",

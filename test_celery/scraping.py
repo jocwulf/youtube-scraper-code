@@ -43,9 +43,8 @@ def parse_advanced_statistics(video_id, company=None, channel_id=None):
   driver = webdriver.PhantomJS()
   driver.set_window_size(1000, 500)
 
-  timeout = 10 
   driver.get("https://www.youtube.com/watch?v=" + video_id)
-  WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.NAME, "session_token"))) 
+  WebDriverWait(driver, requests_timeout).until(EC.presence_of_element_located((By.NAME, "session_token"))) 
   video_page_source = driver.page_source
 
   # Use regular expression to extract session token, might be necessary to adjust expression in the future if youtube changes the struture of the video page source code
@@ -189,7 +188,7 @@ def process_asr_caption(youtube, video_id, company=None, channel_id=None):
 		return False
 
 	url = authenticated_url + "&name&kind=asr&type=track&lang=" + video_language
-	r = requests.get(url)
+	r = requests.get(url, timeout=requests_timeout)
 
 	""" if response empty or 404 error, no automatically generated caption is available for the video """
 	if r.text.find("<transcript>") < 0:
@@ -263,7 +262,7 @@ def process_manual_captions(video_id, company=None, channel_id=None):
 	"""
 
 	""" retrieve all manually created captions for the video and convert to a python list using BeautifulSoup """
-	r = requests.get("https://video.google.com/timedtext?hl=en&type=list&v=" +  video_id)
+	r = requests.get("https://video.google.com/timedtext?hl=en&type=list&v=" +  video_id, timeout=requests_timeout)
 
 	xml_soup = BeautifulSoup(r.text, "lxml") 
 
@@ -279,7 +278,7 @@ def process_manual_captions(video_id, company=None, channel_id=None):
 
 	for caption_meta_info in captions_list:
 
-		r = requests.get("https://video.google.com/timedtext?hl={0}&lang={0}&name={1}&v={2}".format(caption_meta_info["language"].encode("utf-8"), caption_meta_info["name"].encode("utf-8"), video_id))
+		r = requests.get("https://video.google.com/timedtext?hl={0}&lang={0}&name={1}&v={2}".format(caption_meta_info["language"].encode("utf-8"), caption_meta_info["name"].encode("utf-8"), video_id), timeout=requests_timeout)
 
 		""" Format xml formatted caption and extract plain text from xml formatted caption using regular expression  """
 		caption = clean_captions_xml_and_extract_plain_text(r.text)
