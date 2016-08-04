@@ -52,7 +52,7 @@ def parse_channel(youtube, channel_id, company):
     # Implements the retry/error mechanism outlined in the method specification
     channel["video_ids"] = get_video_ids_by_playlist(youtube, channel["contentDetails"]["relatedPlaylists"]["uploads"])   
     
-    i = 1
+    i = 0
     for video_id in channel["video_ids"]:
       for attempt in range(max_retries_parse_video):
         try:
