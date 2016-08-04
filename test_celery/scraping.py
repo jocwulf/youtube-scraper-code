@@ -186,7 +186,7 @@ def process_asr_caption(youtube, video_id, company=None, channel_id=None):
 
 	# if no video language was found, no asr captions are available for the video
 	if video_language == False:
-		return
+		return False
 
 	url = authenticated_url + "&name&kind=asr&type=track&lang=" + video_language
 	r = requests.get(url)
