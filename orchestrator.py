@@ -111,7 +111,8 @@ if __name__ == "__main__":
           continue  
 	  
         print("Initated data collection and scraping for " + channel_id + " " + security_name)
-        parse_channel.delay(get_random_api_access(), channel_id, security_name)     
+        parse_channel.delay(get_random_api_access(), channel_id, security_name)  
+           
       v += 1
     else:
       logging.warning("WARNING: No url specified for " + security_name)  

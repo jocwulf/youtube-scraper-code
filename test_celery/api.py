@@ -3,7 +3,7 @@
 """
 This file contains information collection procedures that use the youtube data API.
 It is advised to read the data structure documentation (PDF) prior to diving into the code
-Most procedures following a similar structure (Configuring API Call, paginated information retrival, error handling, data cleanup and saving).
+Most procedures following a similar structure (Configuring API Call, paginated information retrival, error handling, data cleanup and saving) and thus are not commented in detail.
 Please refer to parse_comments_for_video() for detailed comments on the standard structure
 """ 
 
