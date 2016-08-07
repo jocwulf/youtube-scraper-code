@@ -1,8 +1,9 @@
 from pymongo import MongoClient
 import os
+import logging
 
 # Configure database connection and collection names here
-client = MongoClient(os.environ.get("MONGODB_URL","mongodb://159.203.156.236/data"), connect=False)
+client = MongoClient(os.environ.get("MONGODB_URL","mongodb://159.203.158.20/debug"), connect=False)
 db = client.get_default_database()
 
 videos = db.videos
@@ -47,6 +48,13 @@ DEVELOPER_KEYS = [
  "AIzaSyBcZRFsck5pdl3HGZ2eV_l7wB8RuYtWruo"
 ]
 
+
+# Surpress info logging information from submodules that cause logs to be too crowded
+logging.getLogger('googleapiclient').setLevel(logging.WARNING)
+logging.getLogger('requests').setLevel(logging.WARNING)
+logging.getLogger('urllib3').setLevel(logging.WARNING)
+logging.getLogger('oauth2client').setLevel(logging.WARNING)
+logging.getLogger('selenium').setLevel(logging.WARNING)
 
 
 # Specify fields to index in mongodb to speed up lookups
