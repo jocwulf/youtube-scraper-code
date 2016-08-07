@@ -67,7 +67,7 @@ def parse_channel(youtube, channel_id, company):
 
         else:
           i += 1
-          print "parsed video: " + video_id + "  " + str(i) + "/" + str(len(channel["video_ids"])) + " of channel: " + str(channel_id) + " company: " + str(company)
+          logging.info("parsed video: " + video_id + "  " + str(i) + "/" + str(len(channel["video_ids"])) + " of channel: " + str(channel_id) + " company: " + str(company))
           break
 
 
@@ -90,7 +90,7 @@ def parse_channel(youtube, channel_id, company):
     channel["_id"] = channel_id
     channel["company"] = company
     channels.save(channel)
-    print "parsed channel " + channel_id + " from company " + company 
+    logging.info("parsed channel " + channel_id + " from company " + company)
 
 
 def parse_video(youtube, video_id, company=None, channel_id=None):

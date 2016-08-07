@@ -94,7 +94,8 @@ if __name__ == "__main__":
       # Check for duplicate channel ids in input file
       if channel_id in channel_ids:
         duplicates_count += 1
-        logging.error(" Duplicate channel id "  + str(channel_id) + " from " + str(channel_url) + " is included multiple times in the file")
+        if args.validate_urls_only == False:
+          logging.error(" Duplicate channel id "  + str(channel_id) + " from " + str(channel_url) + " is included multiple times in the file")
         continue
       else:
         channel_ids.append(channel_id)

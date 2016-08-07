@@ -33,6 +33,7 @@ requests_timeout = 15
 
 
 # Specify Youtube API Keys here, the tool will distribute the API requests over the quotas associated with different keys through the get_random_api_access method
+"""
 DEVELOPER_KEYS = [
 "AIzaSyChV4ClaMn3SLRb2Ks6S0lLKcD9zKLveBA",
 "AIzaSyDflZM0oBLQ4Zy22UITXmxS-YQEN6gTSWc",
@@ -46,6 +47,14 @@ DEVELOPER_KEYS = [
  "AIzaSyBySML8O8Z-GeVZNrOWwFuKnDempAt-qYU",
  "AIzaSyCJTCvcyTtJxduOVrbq8jAqTID-YweTSCc",
  "AIzaSyBcZRFsck5pdl3HGZ2eV_l7wB8RuYtWruo"
+]"""
+
+DEVELOPER_KEYS = [
+"AIzaSyCBtnVlPbno6jrelmGCMWrJ6B2jomGOCh8",
+"AIzaSyCge0C47Q3YxGdYoJ6JpqQDo0JavUSFT4M",
+"AIzaSyBblnP-wMBzYxlj51bAXjV2Q6EhQkZionY",
+"AIzaSyAI4YxLRBO_IHKIb_tV3582K14c48esPHk",
+"AIzaSyA8N9m_WZlYIZL6nZ9uQ5GZnV5l1gdcEM0"
 ]
 
 
