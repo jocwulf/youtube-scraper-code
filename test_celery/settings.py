@@ -3,7 +3,7 @@ import os
 import logging
 
 # Configure database connection and collection names here
-client = MongoClient(os.environ.get("MONGODB_URL","mongodb://159.203.158.20/debug"), connect=False)
+client = MongoClient(os.environ.get("MONGODB_URL","mongodb://159.203.158.20/demo"), connect=False)
 db = client.get_default_database()
 
 videos = db.videos
@@ -33,23 +33,19 @@ requests_timeout = 15
 
 
 # Specify Youtube API Keys here, the tool will distribute the API requests over the quotas associated with different keys through the get_random_api_access method
-"""
 DEVELOPER_KEYS = [
 "AIzaSyChV4ClaMn3SLRb2Ks6S0lLKcD9zKLveBA",
 "AIzaSyDflZM0oBLQ4Zy22UITXmxS-YQEN6gTSWc",
 "AIzaSyBJv2rSblBo1qTf_qpVB4KzZRhBzY14PlQ",
 "AIzaSyCFp5JjMeB6INbTopPbTRwJXCeBnhvPtI4",
 "AIzaSyB3bFpEKCg9oYdubxejY783JsJOvpd8E8Q",
- "AIzaSyDzIM-HL6bHYKJc9IQ9WKg1D07eAY9I5tg",
- "AIzaSyBKYY06phdfZwh22kJgCh9phzX965beiBI",
- "AIzaSyDje7dprx2ANe6DOWJix8yh6HF6f9p_FTQ",
- "AIzaSyDgVRzebzBCeOdwHXK3mrDKU3JcG-3Aa7s",
- "AIzaSyBySML8O8Z-GeVZNrOWwFuKnDempAt-qYU",
- "AIzaSyCJTCvcyTtJxduOVrbq8jAqTID-YweTSCc",
- "AIzaSyBcZRFsck5pdl3HGZ2eV_l7wB8RuYtWruo"
-]"""
-
-DEVELOPER_KEYS = [
+"AIzaSyDzIM-HL6bHYKJc9IQ9WKg1D07eAY9I5tg",
+"AIzaSyBKYY06phdfZwh22kJgCh9phzX965beiBI",
+"AIzaSyDje7dprx2ANe6DOWJix8yh6HF6f9p_FTQ",
+"AIzaSyDgVRzebzBCeOdwHXK3mrDKU3JcG-3Aa7s",
+"AIzaSyBySML8O8Z-GeVZNrOWwFuKnDempAt-qYU",
+"AIzaSyCJTCvcyTtJxduOVrbq8jAqTID-YweTSCc",
+"AIzaSyBcZRFsck5pdl3HGZ2eV_l7wB8RuYtWruo",
 "AIzaSyCBtnVlPbno6jrelmGCMWrJ6B2jomGOCh8",
 "AIzaSyCge0C47Q3YxGdYoJ6JpqQDo0JavUSFT4M",
 "AIzaSyBblnP-wMBzYxlj51bAXjV2Q6EhQkZionY",
