@@ -89,7 +89,6 @@ channel_activities.ensure_index("videoId")
 
 advancedVideoStatistics.ensure_index("company")
 advancedVideoStatistics.ensure_index("channelId")
-advancedVideoStatistics.ensure_index("videoId")
 
 captions.ensure_index("company")
 captions.ensure_index("channelId")
