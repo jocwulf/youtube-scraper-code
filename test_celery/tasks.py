@@ -63,7 +63,7 @@ def parse_channel(youtube, channel_id, company):
             raise e
           else:
             clean_video_data(video_id)
-			logging.warning("Retrying parsing of video %s from channel %s, attempt %s/%s", video_id, channel_id, attempt + 1, max_retries_parse_video, exc_info=e)
+            logging.warning("Retrying parsing of video %s from channel %s, attempt %s/%s", video_id, channel_id, attempt + 1, max_retries_parse_video, exc_info=e)
 
         else:
           i += 1
