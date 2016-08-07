@@ -63,7 +63,8 @@ def parse_channel(youtube, channel_id, company):
             raise e
           else:
             clean_video_data(video_id)
-            logging.warning("Retrying parsing of video %s from channel %s, attempt %s/%s", video_id, channel_id, attempt + 1, max_retries_parse_video, exc_info=e)
+			logging.warning("Retrying parsing of video %s from channel %s, attempt %s/%s", video_id, channel_id, attempt + 1, max_retries_parse_video, exc_info=e)
+
         else:
           i += 1
           print "parsed video: " + video_id + "  " + str(i) + "/" + str(len(channel["video_ids"])) + " of channel: " + str(channel_id) + " company: " + str(company)
@@ -80,6 +81,7 @@ def parse_channel(youtube, channel_id, company):
   except Exception, exc:
     clean_channel_data(channel_id, False)	
     logging.warning("Error parsing channel %s. Cleaned all data related to channel and initating retry:", channel_id, exc_info=exc)
+
     raise parse_channel.retry(exc=exc)
   else:
 
